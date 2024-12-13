@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart City Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-funnel"></script>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f9;
+    }
+    .dashboard-container {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      padding: 20px;
+    }
+    .card {
+        background: #4CAF50;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+    .chart-container {
+      width: 100%;
+      height: 300px;
+    }
+    .card h3 {
+    margin: 10px 0;
+    color: #f8faf9;
+    font-family: system-ui;
+    text-transform: uppercase;
+}
+    .tabs-container {
+      margin: 20px;
+      padding: 20px;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+    }
+    .p{
+        color: white;
+    
+    }
+    table {
+            width: 100%;
+            margin: 20px auto;
+            border-collapse: collapse;
+        }
+        th, td {
+          border: 1px solid #ccc;
+    padding: 10px;
+    text-align: justify;
+        }
+        th {
+            background-color: #28a745;
+            color: white;
+        }
+  </style>
+</head>
+<body>
+  <div class="tabs-container">
+    <div class="dashboard-container">
+      <div class="card">
+        <h3>Total Projects</h3>
+        <p class="p">4</p>
+      </div>
+      <div class="card">
+        <h3>Total Contract Amount</h3>
+        <p class="p">₹1,943,750,968.23</p>
+      </div>
+      <div class="card">
+        <h3>Total Payments Made</h3>
+        <p class="p">₹1,034,282,233.29</p>
+      </div>
+    </div>
+    
+    <div class="dashboard-container">
+      <div class="chart-container">
+        <center><h3 style="background-color: #4CAF50;color: white; padding: 8px;font-size: 16px;">
+            Contract Amount</h3>
+         
+        <canvas id="barChart"></canvas></center>
+      </div>
+    
+      <div class="chart-container">
+        <center><h3 style="background-color: #4CAF50;color: white;padding: 8px;font-size: 16px;">Balance Amount</h3></center>
+        <center><canvas id="donutChart"></canvas></center>
+      </div>
+      
+      <div class="chart-container">
+        <center><h3 style="background-color: #4CAF50;color: white; padding: 8px;font-size: 16px;">
+            Contract Duration (Months)</h3>
+         <canvas id="contractChart"></canvas></center>
+      </div>
+      <div class="chart-container">
+        <center><h3 style="background-color: #4CAF50;color: white; padding: 8px;font-size: 16px;">
+            Contract Extension(Till Date) </h3>
+         <canvas id="lineChart"></canvas></center>
+      </div>
+      <div class="chart-container">
+       
+      </div>
+      <div class="chart-container">
+        <center>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Company Name</th>
+                        <th>License Type</th>
+                    </tr>
+                </thead>
+                <tbody id="company-table-body">
+                    <!-- Rows will be dynamically added here -->
+                </tbody>
+            </table>
+        </center>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Horizontal Bar Chart
+    const barChart = new Chart(document.getElementById('barChart'), {
+      type: 'bar',
+      data: {
+        labels: ['Digital City Platform: Pilot Project','Additional Roll Out', 'AMR Water Meter', 'Variable Messaging Display'],
+        datasets: [{
+          label: 'Contract Amount (₹)',
+          data: [1469314531,323553038.71,73789779.52,26667619.00],
+          backgroundColor: ['#1c8c4d', '#28a745', '#196f3d', '#2ecc71']
+        }]
+      },
+      options: {
+        indexAxis: 'y', // This makes the bar chart horizontal
+        responsive: true,
+        plugins: {
+          legend: {
+            position: 'top',
+          },
+          tooltip: {
+            enabled: true,
+          },
+        },
+      }
+    });
+
+    const donutChart = new Chart(document.getElementById('donutChart'), {
+  type: 'doughnut',
+  data: {
+    labels: ['Digital City Platform: Pilot Project', 'Additional Roll Out', 'AMR Water Meter', 'Variable Messaging Display'],
+    datasets: [{
+      label: "Balance Payment (₹)",
+      data: [79437006, 112776815.62, 35817436.07, 5296332.63],
+      backgroundColor: ['#28a745', '#f1c40f', '#e74c3c', '#3498db']
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: 'bottom',
+      }
+    },
+  }
+});
+
+const contractLineChart = new Chart(document.getElementById('lineChart'), {
+  type: 'line', // Line chart type
+  data: {
+    labels: [
+      'Pilot Project: 04/30/2025', 
+      'Additional Roll Out: 12/31/2024', 
+      'AMR Water Meter: 12/31/2024', 
+      'Variable Messaging Display: 09/09/2025'
+    ],
+    datasets: [{
+      label: 'Contract Extension (Months)',
+      data: [4, 12, 12, 9], // Values representing months
+      borderColor: '#3498db', // Line color
+      backgroundColor: 'rgba(52, 152, 219, 0.5)', // Area under the line
+      fill: true, // Fill area under the line
+      tension: 0.4 // Smooth line curve
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: 'top',
+      },
+      tooltip: {
+        callbacks: {
+          label: function(context) {
+            return `${context.label}: ${context.raw} months`;
+          }
+        }
+      }
+    },
+    scales: {
+      x: {
+        title: {
+          display: true,
+          text: 'Contracts'
+        }
+      },
+      y: {
+        title: {
+          display: true,
+          text: 'Duration (Months)'
+        },
+        beginAtZero: true // Ensure Y-axis starts at zero
+      }
+    }
+  }
+});
+
+
+// Data for the four companies
+const companies = [
+    { name: "M/s Teracis Technologies Ltd.", licenseType: "Permanent" },
+    { name: "M/s Technosys Security Solutions Pvt. Ltd.", licenseType: "Permanent" },
+    { name: "M/s R. K. Builders Pvt. Ltd.", licenseType: "Permanent" },
+    { name: "M/s IDDS Pvt. Ltd.", licenseType: "Permanent" },
+];
+
+// Function to populate the table with data
+function populateTable() {
+    const tableBody = document.getElementById("company-table-body");
+
+    // Clear existing rows if any
+    tableBody.innerHTML = "";
+
+    // Create rows for each company
+    companies.forEach((company) => {
+        const row = document.createElement("tr");
+
+        // Create cells for name and license type
+        const nameCell = document.createElement("td");
+        nameCell.textContent = company.name;
+
+        const licenseCell = document.createElement("td");
+        licenseCell.textContent = company.licenseType;
+
+        // Append cells to the row
+        row.appendChild(nameCell);
+        row.appendChild(licenseCell);
+
+        // Append row to the table body
+        tableBody.appendChild(row);
+    });
+}
+
+// Call the function to populate the table on page load
+populateTable();
+
+const contractChart = new Chart(document.getElementById('contractChart'), {
+  type: 'line',  // Change type to 'line'
+  data: {
+    labels: [
+      'M/s Teracis Technologies Ltd.', 
+      'Technosys Solutions Pvt Ltd', 
+      'M/s R. K. Builders Pvt. Ltd.', 
+      'M/s IDDS Pvt. Ltd.'
+    ],
+    datasets: [
+      {
+        label: 'Contract Duration (Months)',
+        data: [88.73, 9.17, 10.1, 36.5], // Duration in months
+        fill: false,  // No fill for line chart
+        borderColor: ['#1c8c4d', '#28a745', '#196f3d', '#2ecc71'], // Line color
+        tension: 0.4  // Smooth the line
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    indexAxis: 'y',  // Horizontal chart
+    plugins: {
+      legend: {
+        position: 'top',
+      },
+      tooltip: {
+        callbacks: {
+          label: function(context) {
+            const months = context.raw;
+            return `${months.toFixed(2)} months`;
+          }
+        }
+      }
+    },
+    scales: {
+      x: {
+        title: {
+          display: true,
+          text: 'Duration (months)'
+        }
+      },
+      y: {
+        title: {
+          display: true,
+          text: 'Contracted Companies'
+        }
+      }
+    }
+  }
+});
+
+
+  </script>
+</body>
+</html>
